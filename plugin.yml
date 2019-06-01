@@ -4,5 +4,5 @@ version: 1.0.0
 author: Mev
 api: 3.0.0
 commands:
-  trash:
-    description: Open a trash for drop your shit
+  servers:
+    description: Transfer to another server!
