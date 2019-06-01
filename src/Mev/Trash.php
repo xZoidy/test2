@@ -2,6 +2,8 @@
 namespace Mev;
 
 use pocketmine\block\Block;
+use muqsit\invmenu\InvMenu;
+use muqsit\invmenu\InvMenuHandler;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\Command;
@@ -31,7 +33,10 @@ class Trash extends PluginBase implements Listener {
 	
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
-		$this->getLogger()->Info(C::GREEN. "Trash Enabled!");
+		$this->getLogger()->Info(C::GREEN. "gui test Enabled!");
+		if(!InvMenuHandler::isRegistered()){
+	InvMenuHandler::register($this);
+}
 	}
 	
 	public function closeInventory(Player $player) {
@@ -98,9 +103,15 @@ class Trash extends PluginBase implements Listener {
 		]);
 		if ($tile instanceof Chest){
 			//Items
+			$this->menu = InvMenu::create(InvMenu::TYPE_CHEST)
+            ->readonly()
+            ->setName("§6§lSnaqe §7Special Kits")
+            ->setListener([$this, "onInventoryTransaction"]);
 			$inv = $tile->getInventory();
+			$sword = Item::get(270, 0, 1);
+			$sword->setCustomName(C::RESET . C::BOLD . C::RED . "§6§lSquads");
 			$glass = Item::get(160, 7, 1);
-			$glass->setCustomName(" ");
+			$glass->setCustomName(C::RESET . C::BOLD . C::RED . "§b-—");
 			$exit = Item::get(355, 14, 1);
 			$exit->setCustomName(C::RESET . C::BOLD . C::RED . "Exit");
 			$inv->setItem(0, $glass);
@@ -117,9 +128,9 @@ class Trash extends PluginBase implements Listener {
 			If you want to create a plugin with a chest i have set this.
 			$inv->setItem(10, $glass);
 			$inv->setItem(11, $grass);
-			$inv->setItem(12, $glass);
-			$inv->setItem(13, $glass);
-			$inv->setItem(14, $glass);
+			$inv->setItem(12, $glass);*/
+			$inv->setItem(13, $sword);
+			/**$inv->setItem(14, $glass);
 			$inv->setItem(15, $glass);
 			$inv->setItem(16, $glass);
 			*/
@@ -133,13 +144,13 @@ class Trash extends PluginBase implements Listener {
 			$inv->setItem(24, $glass);
 			
 			$inv->setItem(25, $glass);
-			$inv->setItem(26, $exit);
+			$inv->setItem(26, $glass);
 		}
 		$player->addWindow($tile->getInventory());
 	}
 	
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) :bool{
-		if(strtolower($cmd->getName()) == "trash"){
+		if(strtolower($cmd->getName()) == "servers"){
 			if($sender instanceof Player){
 				$this->sendNavigator($sender);
 			} else {
@@ -156,11 +167,20 @@ class Trash extends PluginBase implements Listener {
 		foreach ($action as $inventoryAction) {
 			$item = $inventoryAction->getTargetItem();
 			}
-			if($item->getName() == C::RESET . C::BOLD . C::RED . "Exit"){
-				$this->closeInventory($player);
+			if($item->getName() == C::RESET . C::BOLD . C::RED . "§6§lSquads"){
+			    $this->getServer()->dispatchCommand(new ConsoleCommandSender(), "sjg $player /transferserver sevens.snaqehcf.tk 25607");
+$this->closeInventory($player);
 				$event->setCancelled();
 			}elseif($item->getName() == " "){
 				$event->setCancelled();
+				
 			}
-	}
+			if($item->getName() == C::RESET . C::BOLD . C::RED . "§b-—"){
+				$this->closeInventory($player);
+				$event->setCancelled();
+			}elseif($item->getName() == " "){
+			    $event->setCancelled();
+			}
+			}
+	
 }
